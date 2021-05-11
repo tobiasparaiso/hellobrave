@@ -59,7 +59,7 @@ pipeline {
         stage('Deploy App') {
             steps {
                 dir("${env.WORKSPACE}/kubernetes") { 
-                    sh 'kubectl apply -f k8s.yaml --kubeconfig=${WORKSPACE}/cluster.conf'
+                    sh '/var/lib/jenkins/.local/bin/kubectl apply -f k8s.yaml --kubeconfig=${WORKSPACE}/cluster.conf'
                 }
             }
         }

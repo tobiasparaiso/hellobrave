@@ -45,22 +45,24 @@ pipeline {
                 }
             }
         }
-        stage("Setting k8s.yaml") {           
-            variableReplace(
-                configs: [
-                    variablesReplaceConfig(
-                        configs: [
-                            variablesReplaceItemConfig( 
-                                name: 'CONTAINER_REGISTRY',
-                                value: '${param_container_registry}'
-                            ),
-                        ],
-                        fileEncoding: 'UTF-8', 
-                        filePath: 'kubernetes/k8s.yaml', 
-                        variablesPrefix: '__', 
-                        variablesSuffix: '__'
-                        )]
-            )
+        stage("Setting k8s.yaml") {
+            steps {           
+                variableReplace(
+                    configs: [
+                        variablesReplaceConfig(
+                            configs: [
+                                variablesReplaceItemConfig( 
+                                    name: 'CONTAINER_REGISTRY',
+                                    value: '${param_container_registry}'
+                                ),
+                            ],
+                            fileEncoding: 'UTF-8', 
+                            filePath: 'kubernetes/k8s.yaml', 
+                            variablesPrefix: '__', 
+                            variablesSuffix: '__'
+                            )]
+                )
+            }    
         }    
         stage('Deploy App') {
             agent {

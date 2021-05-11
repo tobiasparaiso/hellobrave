@@ -1,3 +1,11 @@
+kind: Secret
+apiVersion: v1
+metadata:
+  name: myregistrykey
+data:
+  .dockerconfigjson: L3Jvb3QvLmRvY2tlci9jb25maWcuanNvbgo=
+type: kubernetes.io/dockerconfigjson
+---
 kind: Service
 apiVersion: v1
 metadata:
@@ -8,7 +16,7 @@ metadata:
 spec:
   selector:
     app: ${APP_LABEL}
-  type: NodePort
+  type: LoadBalancer
   ports:
   - protocol: TCP
     port: 80
@@ -18,9 +26,6 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: ${APP_NAME}
-  annotations:
-    app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
-    app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
 spec:
   replicas: 1
   selector:
@@ -30,27 +35,12 @@ spec:
     metadata:
       labels:
         app: ${APP_LABEL}
-      annotations:
-        app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
-        app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
     spec:
       imagePullSecrets:
-      - name: gitlab-auth
+      - name: dockerhub
       containers:
       - name: ${APP_NAME}
-        image: "${DOCKER_IMAGE_TAG}"
+        image: "${CONTAINER_REGISTRY}/hellobrave:latest"
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: ${APP_NAME}-ingress
-spec:
-  rules:
-    - host: ${DEPLOY_HOST}
-      http:
-        paths:
-          - backend:
-              serviceName: ${APP_NAME}
-              servicePort: 80

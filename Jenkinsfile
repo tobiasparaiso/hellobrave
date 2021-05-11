@@ -6,6 +6,8 @@ pipeline {
         AWS_REGION = "${param_aws_region}"
         TERRAFORM_STATE_DIR = "${param_terraform_state_dir}"
         CONTAINER_REGISTRY = "${param_container_registry}"
+        APP_NAME = "${param_app_name}"
+        APP_LABEL = "${param_app_label}"
     }
     stages {
         stage('Provisioning AWS Infrastructure') {
@@ -54,7 +56,7 @@ pipeline {
             }
             steps {
                 dir("${env.WORKSPACE}/kubernetes") { 
-                    sh 'kubectl apply -f k8s.yaml --kubeconfig=/conf-workspace/cluster.conf'
+                    sh 'cat k8s.yaml | envsubst | kubectl --kubeconfig=/conf-workspace/cluster.conf apply -f -'
                 }
             }
         }        

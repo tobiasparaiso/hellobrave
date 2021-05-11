@@ -38,7 +38,7 @@ pipeline {
         stage("Push image") {
             steps {
                 script {
-                     docker.withRegistry('https://registry.hub.docker.com', 'container_registry') {
+                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
                             myimage.push()
                             myimage.push("latest")
         stage('Deploy App') {

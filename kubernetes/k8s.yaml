@@ -32,7 +32,7 @@ spec:
       - name: dockerhub
       containers:
       - name: hellobrave
-        image: "${param_container_registry}/hellobrave:latest"
+        image: "tobiasparaiso/hellobrave:latest"
         imagePullPolicy: Always
         ports:
         - containerPort: 80

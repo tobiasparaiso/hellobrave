@@ -7,9 +7,9 @@ pipeline {
         TERRAFORM_STATE_DIR = "${param_terraform_state_dir}"
         CONTAINER_REGISTRY = "${param_container_registry}"
     }
-    variableReplace (
+    variableReplace {
             configs: [
-                     variablesReplaceConfig(
+                    variablesReplaceConfig{
                             configs: [
                                 variablesReplaceItemConfig( 
                                     name: 'CONTAINER_REGISTRY',
@@ -20,8 +20,8 @@ pipeline {
                             filePath: 'kubernetes/k8s.yaml', 
                             variablesPrefix: '__', 
                             variablesSuffix: '__'
-                            )]
-    )
+                    }]
+    }
     stages {
         stage('Provisioning AWS Infrastructure') {
             agent {

@@ -60,11 +60,6 @@ pipeline {
                 }
             }
         }
-        stage("Setting k8s.yaml") {
-            steps {           
-
-            }    
-        }    
         stage('Deploy App') {
             agent {
                 docker { 

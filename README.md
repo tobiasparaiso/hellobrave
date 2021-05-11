@@ -14,7 +14,7 @@ Builds and pushes a docker image to the container registry and finally deploys t
 - Create necessary credentials on Jenkins alike [this print](Jenkins_Pipeline_Credentials.PNG);
 - Create new pipeline job on Jenkins with custom variables (Type: pipeline. Parameters: alike [this print](Jenkins_Pipeline_Setup_Cluster_Parameters.PNG)) and use the Jenkinsfile on repo.
 
-> To destroy the entire created infrastruture use the Jenkinsfile_destroy
+> To destroy the entire created infrastruture use the [Jenkinsfile_destroy](Jenkinsfile_destroy)
 
 ## Development server
 

@@ -7,6 +7,15 @@ This project follows the principle of infrastructure as a code.
 It uses terraform to create an EKS Cluster and all the necessary infrastructure on AWS.
 Builds and pushes a docker image to the container registry and finally deploys the application to the EKS Cluster.
 
+## Steps to built the project in AWS with Jenkins Pipeline
+- Install one instance of Jenkins;
+- Install docker and git in the Jenkins istance;
+- Create necessary credentials on Jenkins alike [this print](Jenkins_Pipeline_Credentials.png). 
+  > Put the output of **"cat id_rsa | base64 -w0"** in the "azure_nodes_admin_ssh_privkey" credential.
+- Create new job on Jenkins with custom variables (Type: pipeline. Parameters: alike [this print](Jenkins_Pipeline_Setup_Cluster_Parameters.png)).
+- Create new job on jenkins to destroy the cluster (Type: pipeline. Parameters: alike [this print](infra/Jenkins_Pipeline_Destroy_Cluster_Parameters.png)).
+
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.

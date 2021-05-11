@@ -14,6 +14,9 @@ pipeline {
                     sh 'chmod +x ./aws-iam-authenticator'                         
                     sh 'mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin' 
                     sh "echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc"
+                    sh 'curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"'
+                    sh 'mkdir -p ~/.local/bin/kubectl' 
+                    sh 'mv ./kubectl ~/.local/bin/kubectl'
                 }
             }  
         stage('Provisioning AWS Infrastructure') {
@@ -54,15 +57,9 @@ pipeline {
             }
         }                
         stage('Deploy App') {
-            agent {
-                docker { 
-                    image 'dtzar/helm-kubectl'
-                    args '-e KUBECONFIG=${WORKSPACE}/cluster.conf -i --network host --entrypoint='
-                }
-            }
             steps {
                 dir("${env.WORKSPACE}/kubernetes") { 
-                    sh 'kubectl apply -f k8s.yaml'
+                    sh 'kubectl apply -f k8s.yaml --kubeconfig=${WORKSPACE}/cluster.conf'
                 }
             }
         }

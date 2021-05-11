@@ -33,7 +33,7 @@ pipeline {
                     sh 'terraform apply -auto-approve -var "aws_access_key_id=$AWS_ACCESS_KEY_ID" \
                         -var "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" \
                         -var "aws_region=$AWS_REGION"' 
-                    sh 'terraform output -raw kubectl_config > ${WORKSPACE}/cluster.conf'
+                    sh 'terraform output kubectl_config > ${WORKSPACE}/cluster.conf'
                 //write the template output in a file
                 //    def fileContent = sh(returnStdout: true, script: "terraform output -raw kubectl_config")
                 //    writeFile file: "${WORKSPACE}/cluster.conf", text: fileContent

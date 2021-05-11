@@ -9,6 +9,12 @@ pipeline {
     }
     stages {
         stage('Destroy AWS Infrastructure') {
+            agent {
+                docker { 
+                    image 'hashicorp/terraform:0.14.11'
+                    args '-i --network host -v "$TERRAFORM_STATE_DIR":/backend --entrypoint='
+                }
+            }
             steps {
                     sh 'terraform init' 
                     sh 'terraform destroy -force -var "aws_access_key_id=$AWS_ACCESS_KEY_ID" \

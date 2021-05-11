@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
+        AWS_REGION = "${param_aws_region}"
+        TERRAFORM_STATE_DIR = "${param_terraform_state_dir}"
+        CONTAINER_REGISTRY = "${param_container_registry}"
+    }
+    stages {
+        stage('Destroy AWS Infrastructure') {
+            steps {
+                    sh 'terraform init' 
+                    sh 'terraform destroy -force -var "aws_access_key_id=$AWS_ACCESS_KEY_ID" \
+                        -var "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" \
+                        -var "aws_region=$AWS_REGION"'  
+            }
+        }  
+    }
+}

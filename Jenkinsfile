@@ -11,7 +11,7 @@ pipeline {
         stage('Provisioning AWS Infrastructure') {
             agent {
                 docker { 
-                    image 'hashicorp/terraform:0.12.26'
+                    image 'hashicorp/terraform:0.14.0'
                     args '-i --network host -v "$TERRAFORM_STATE_DIR":/backend --entrypoint='
                 }
             }

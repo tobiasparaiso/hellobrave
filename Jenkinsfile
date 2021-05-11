@@ -6,8 +6,6 @@ pipeline {
         AWS_REGION = "${param_aws_region}"
         TERRAFORM_STATE_DIR = "${param_terraform_state_dir}"
         CONTAINER_REGISTRY = "${param_container_registry}"
-        APP_NAME = "${param_app_name}"
-        APP_LABEL = "${param_app_label}"
     }
     stages {
         stage('Provisioning AWS Infrastructure') {

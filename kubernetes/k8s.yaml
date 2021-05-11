@@ -12,10 +12,10 @@ metadata:
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "5000"
-  name: ${APP_NAME}
+  name: hellobrave
 spec:
   selector:
-    app: ${APP_LABEL}
+    app: hellobrave
   type: LoadBalancer
   ports:
   - protocol: TCP
@@ -25,22 +25,22 @@ spec:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: ${APP_NAME}
+  name: hellobrave
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ${APP_LABEL}
+      app: hellobrave
   template:
     metadata:
       labels:
-        app: ${APP_LABEL}
+        app: hellobrave
     spec:
       imagePullSecrets:
       - name: dockerhub
       containers:
-      - name: ${APP_NAME}
-        image: "${CONTAINER_REGISTRY}/hellobrave:latest"
+      - name: hellobrave
+        image: "${param_container_registry}/hellobrave:latest"
         imagePullPolicy: Always
         ports:
         - containerPort: 80

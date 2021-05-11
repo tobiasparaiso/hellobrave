@@ -25,6 +25,7 @@ pipeline {
             }
             steps {
                 dir(path: 'terraform/') { 
+                script {    
                     sh 'terraform init' 
                     sh 'terraform plan -var "aws_access_key_id=$AWS_ACCESS_KEY_ID" \
                         -var "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" \
@@ -32,10 +33,11 @@ pipeline {
                     sh 'terraform apply -auto-approve -var "aws_access_key_id=$AWS_ACCESS_KEY_ID" \
                         -var "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" \
                         -var "aws_region=$AWS_REGION"' 
-                // sh 'terraform output -state=$TERRAFORM_STATE_DIR/terraform.tfstate -raw kubectl_config > cluster.conf'
+                    sh 'terraform output -raw kubectl_config > ${WORKSPACE}/cluster.conf'
                 //write the template output in a file
-                    def fileContent = sh(returnStdout: true, script: "terraform output -raw kubectl_config")
-                    writeFile file: "${WORKSPACE}/cluster.conf", text: fileContent
+                //    def fileContent = sh(returnStdout: true, script: "terraform output -raw kubectl_config")
+                //    writeFile file: "${WORKSPACE}/cluster.conf", text: fileContent
+                }
                 }
             }
         }     

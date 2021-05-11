@@ -1,0 +1,117 @@
+stages:
+  - build
+  - scan
+  - release
+  - review
+  - staging
+  - production
+  - cleanup
+    
+image: alpine:latest
+
+variables:
+  CONTAINER_RELEASE_IMAGE: $ACR_LOGIN_SERVER/test:$CI_COMMIT_SHORT_SHA
+  DOCKER_IMAGE_TAG: $ACR_LOGIN_SERVER/hellowhale:$CI_COMMIT_SHORT_SHA
+
+build:
+  stage: build
+  image: docker:stable
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  before_script:
+  - docker login -u $ACR_USER -p $ACR_PASS $ACR_LOGIN_SERVER
+  script:
+    - docker build -t $CONTAINER_RELEASE_IMAGE .
+    - docker push $CONTAINER_RELEASE_IMAGE
+    
+release:
+  stage: release
+  image: docker:stable
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    CONTAINER_RELEASE_IMAGE: $ACR_LOGIN_SERVER/prod:latest
+  before_script:
+  - docker login -u $ACR_USER -p $ACR_PASS $ACR_LOGIN_SERVER  
+  script:
+    - docker pull $CONTAINER_RELEASE_IMAGE
+    - docker tag $CONTAINER_RELEASE_IMAGE $DOCKER_IMAGE_TAG
+    - docker push $DOCKER_IMAGE_TAG
+
+    
+review:
+  stage: review
+  environment:
+    name: review/${CI_COMMIT_REF_NAME}
+    url: http://${CI_COMMIT_REF_SLUG}.${KUBE_INGRESS_BASE_DOMAIN}
+    on_stop: stop_review
+  variables:
+    APP_NAME: ${CI_ENVIRONMENT_SLUG}-store
+    APP_LABEL: ${CI_ENVIRONMENT_SLUG}
+    DEPLOY_HOST: ${CI_COMMIT_REF_SLUG}.${KUBE_INGRESS_BASE_DOMAIN}
+  image: roffe/kubectl:v1.13.0
+  script:
+    - kubectl delete --ignore-not-found=true secret gitlab-auth
+    - kubectl create secret docker-registry gitlab-auth --docker-server=$ACR_LOGIN_SERVER --docker-username=$ACR_USER --docker-password=$ACR_PASS
+    - cat k8s.yaml | envsubst | kubectl apply -f -
+  except:
+    - master
+
+stop_review:
+  stage: cleanup
+  environment:
+    name: review/${CI_COMMIT_REF_NAME}
+    action: stop
+  variables:
+    APP_NAME: ${CI_ENVIRONMENT_SLUG}-store
+    GIT_STRATEGY: none
+  image: roffe/kubectl:v1.13.0
+  script:
+    - kubectl delete service/${APP_NAME}
+    - kubectl delete deploy/${APP_NAME}
+    - kubectl delete ingress/${APP_NAME}-ingress
+  when: manual
+  except:
+    - master    
+
+staging:
+  stage: staging
+  variables:
+    APP_NAME: staging-store
+    APP_LABEL: staging
+    DEPLOY_HOST: staging-store.${KUBE_INGRESS_BASE_DOMAIN}
+  environment:
+    name: staging
+    url: http://staging-store.${KUBE_INGRESS_BASE_DOMAIN}
+  image: roffe/kubectl:v1.13.0
+  script:
+    - kubectl delete --ignore-not-found=true secret gitlab-auth
+    - kubectl create secret docker-registry gitlab-auth --docker-server=$ACR_LOGIN_SERVER --docker-username=$ACR_USER --docker-password=$ACR_PASS
+    - cat k8s.yaml | envsubst | kubectl apply -f -
+  only:
+    - master
+
+production:
+  stage: production
+  variables:
+    APP_NAME: production-store
+    APP_LABEL: production
+    DEPLOY_HOST: store.${KUBE_INGRESS_BASE_DOMAIN}
+  environment:
+    name: production
+    url: http://store.${KUBE_INGRESS_BASE_DOMAIN}
+  image: roffe/kubectl:v1.13.0
+  script:
+    - kubectl delete --ignore-not-found=true secret gitlab-auth
+    - kubectl create secret docker-registry gitlab-auth --docker-server=$ACR_LOGIN_SERVER --docker-username=$ACR_USER --docker-password=$ACR_PASS
+    - cat k8s.yaml | envsubst | kubectl apply -f -
+  when: manual
+  only:
+    - master

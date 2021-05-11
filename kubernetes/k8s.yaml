@@ -1,0 +1,56 @@
+kind: Service
+apiVersion: v1
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "5000"
+  name: ${APP_NAME}
+spec:
+  selector:
+    app: ${APP_LABEL}
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ${APP_NAME}
+  annotations:
+    app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
+    app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${APP_LABEL}
+  template:
+    metadata:
+      labels:
+        app: ${APP_LABEL}
+      annotations:
+        app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
+        app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-auth
+      containers:
+      - name: ${APP_NAME}
+        image: "${DOCKER_IMAGE_TAG}"
+        ports:
+        - containerPort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ${APP_NAME}-ingress
+spec:
+  rules:
+    - host: ${DEPLOY_HOST}
+      http:
+        paths:
+          - backend:
+              serviceName: ${APP_NAME}
+              servicePort: 80

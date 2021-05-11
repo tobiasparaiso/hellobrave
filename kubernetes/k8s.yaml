@@ -1,11 +1,3 @@
-kind: Secret
-apiVersion: v1
-metadata:
-  name: myregistrykey
-data:
-  .dockerconfigjson: L3Jvb3QvLmRvY2tlci9jb25maWcuanNvbgo=
-type: kubernetes.io/dockerconfigjson
----
 kind: Service
 apiVersion: v1
 metadata:

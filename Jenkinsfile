@@ -7,7 +7,7 @@ pipeline {
         TERRAFORM_STATE_DIR = "${param_terraform_state_dir}"
         CONTAINER_REGISTRY = "${param_container_registry}"
     }
-    variableReplace {
+    variableReplace (
             configs: [
                      variablesReplaceConfig(
                             configs: [
@@ -21,7 +21,7 @@ pipeline {
                             variablesPrefix: '__', 
                             variablesSuffix: '__'
                             )]
-    }
+    )
     stages {
         stage('Provisioning AWS Infrastructure') {
             agent {

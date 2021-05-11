@@ -7,6 +7,21 @@ pipeline {
         TERRAFORM_STATE_DIR = "${param_terraform_state_dir}"
         CONTAINER_REGISTRY = "${param_container_registry}"
     }
+    variableReplace {
+            configs: [
+                     variablesReplaceConfig(
+                            configs: [
+                                variablesReplaceItemConfig( 
+                                    name: 'CONTAINER_REGISTRY',
+                                    value: '${param_container_registry}'
+                                ),
+                            ],
+                            fileEncoding: 'UTF-8', 
+                            filePath: 'kubernetes/k8s.yaml', 
+                            variablesPrefix: '__', 
+                            variablesSuffix: '__'
+                            )]
+    }
     stages {
         stage('Provisioning AWS Infrastructure') {
             agent {
@@ -47,21 +62,7 @@ pipeline {
         }
         stage("Setting k8s.yaml") {
             steps {           
-                variableReplace(
-                    configs: [
-                        variablesReplaceConfig(
-                            configs: [
-                                variablesReplaceItemConfig( 
-                                    name: 'CONTAINER_REGISTRY',
-                                    value: '${param_container_registry}'
-                                ),
-                            ],
-                            fileEncoding: 'UTF-8', 
-                            filePath: 'kubernetes/k8s.yaml', 
-                            variablesPrefix: '__', 
-                            variablesSuffix: '__'
-                            )]
-                )
+
             }    
         }    
         stage('Deploy App') {

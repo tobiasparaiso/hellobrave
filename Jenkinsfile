@@ -54,7 +54,7 @@ pipeline {
             }
             steps {
                 dir("${env.WORKSPACE}/kubernetes") { 
-                    sh 'cat k8s.yaml | envsubst | kubectl --kubeconfig=/conf-workspace/cluster.conf apply -f -'
+                    sh 'kubectl --kubeconfig=/conf-workspace/cluster.conf apply -f k8s.yaml'
                 }
             }
         }        

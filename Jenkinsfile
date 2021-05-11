@@ -41,6 +41,10 @@ pipeline {
                      docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
                             myimage.push()
                             myimage.push("latest")
+                        }
+                }
+            }
+        }                
         stage('Deploy App') {
             agent {
                 docker { 
@@ -54,3 +58,5 @@ pipeline {
                 }
             }
         }
+    }^
+}

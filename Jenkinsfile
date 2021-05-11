@@ -32,7 +32,7 @@ pipeline {
                     sh 'terraform apply -auto-approve -var "aws_access_key_id=$AWS_ACCESS_KEY_ID" \
                         -var "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" \
                         -var "aws_region=$AWS_REGION"' 
-                    sh 'terraform output -raw kubectl_config > cluster.conf'
+                    sh 'terraform output -state=$TERRAFORM_STATE_DIR/terraform.tfstate -raw kubectl_config > cluster.conf'
                 }
             }
         }     

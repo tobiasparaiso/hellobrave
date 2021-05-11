@@ -11,9 +11,7 @@ Builds and pushes a docker image to the container registry and finally deploys t
 - Install one instance of Jenkins;
 - Install docker and git in the Jenkins istance;
 - Create necessary credentials on Jenkins alike [this print](Jenkins_Pipeline_Credentials.PNG). 
-  > Put the output of **"cat id_rsa | base64 -w0"** in the "azure_nodes_admin_ssh_privkey" credential.
-- Create new job on Jenkins with custom variables (Type: pipeline. Parameters: alike [this print](Jenkins_Pipeline_Setup_Cluster_Parameters.PNG)).
-- Create new job on jenkins to destroy the cluster (Type: pipeline. Parameters: alike [this print](infra/Jenkins_Pipeline_Destroy_Cluster_Parameters.png)).
+- Create new pipeline job on Jenkins with custom variables (Type: pipeline. Parameters: alike [this print](Jenkins_Pipeline_Setup_Cluster_Parameters.PNG)) and use the Jenkinsfile on repo.
 
 
 ## Development server

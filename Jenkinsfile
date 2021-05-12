@@ -28,14 +28,14 @@ pipeline {
                 }
             }
         }     
-        stage("Build image") {
+        stage('Build image') {
             steps {
                 script {
                     myimage = docker.build("${CONTAINER_REGISTRY}/hellobrave:${env.BUILD_ID}")
                 }
             }
         }
-        stage("Push image") {
+        stage('Push image') {
             steps {
                 script {
                      docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {

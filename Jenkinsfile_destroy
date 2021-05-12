@@ -15,7 +15,7 @@ pipeline {
                 }
             }
             steps {
-                dir(path: 'terraform/') { 
+                dir(path: 'backend/') { 
                     sh 'terraform init' 
                     sh 'terraform destroy -force -var "aws_access_key_id=$AWS_ACCESS_KEY_ID" \
                         -var "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" \

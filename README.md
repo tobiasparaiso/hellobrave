@@ -10,7 +10,6 @@ Builds and pushes a docker image to the container registry and finally deploys t
 ## Steps to built the project in AWS with Jenkins Pipeline
 - Install one instance of Jenkins;
 - Install docker and git in the Jenkins istance;
-- Change the __CONTAINER_REGISTRY__ on [k8s.yaml](kubernetes/k8s.yaml) file with your container registry 
 - Create necessary credentials on Jenkins alike [this print](Jenkins_Pipeline_Credentials.PNG);
 - Create new pipeline job on Jenkins with custom variables (Type: pipeline. Parameters: alike [this print](Jenkins_Pipeline_Setup_Cluster_Parameters.PNG)) and use the Jenkinsfile on repo.
 

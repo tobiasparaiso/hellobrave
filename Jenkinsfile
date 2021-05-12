@@ -4,7 +4,7 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
         AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
         AWS_REGION = "${param_aws_region}"
-        TERRAFORM_STATE_DIR = "${param_terraform_state_dir}"
+        TERRAFORM_STATE_DIR = "${env.WORKSPACE}"
         CONTAINER_REGISTRY = "${param_container_registry}"
     }
     stages {

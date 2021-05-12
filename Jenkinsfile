@@ -44,14 +44,7 @@ pipeline {
                         }
                 }
             }
-        }
-        stage('Pre Setup k8s.yaml') {
-            steps {
-                dir(path: 'kubernetes/') {
-                    sh "sed -i 's/__CONTAINER_REGISTRY__/${CONTAINER_REGISTRY}/' k8s.yaml"
-                }   
-            }
-        }    
+        } 
         stage('Deploy App') {
             agent {
                 docker { 
@@ -61,6 +54,7 @@ pipeline {
             }
             steps {
                 dir("${env.WORKSPACE}/kubernetes") { 
+                    sh "sed -i 's/__CONTAINER_REGISTRY__/${CONTAINER_REGISTRY}/' k8s.yaml"
                     sh 'kubectl --kubeconfig=/conf-workspace/cluster.conf apply -f k8s.yaml'
                 }
             }
